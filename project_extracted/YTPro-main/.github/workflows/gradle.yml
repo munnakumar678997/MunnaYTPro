@@ -36,17 +36,14 @@ jobs:
 
     - name: Delete old release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      run: gh release delete latest --yes --cleanup-tag
-      continue-on-error: true
+      shell: bash
+      run: gh release delete latest --yes --cleanup-tag || true
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      run: |
-        gh release create latest "app/build/outputs/apk/release/YTPro.apk" ^
-          --title "YT PRO - Latest Build" ^
-          --notes "## YT PRO - Latest Build##Install##Download the APK file and open it on your Android phone to install." ^
-          --latest
+      shell: bash
+      run: gh release create latest "app/build/outputs/apk/release/YTPro.apk" --title "YT PRO - Latest Build" --notes "Download the APK file and install on your Android phone. Allow 'Install from unknown sources' if prompted." --latest
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
